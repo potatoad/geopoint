@@ -1,43 +1,47 @@
-'use server'
+"use server";
 
-import { createClient } from "@/lib/supabase/server"
-import { revalidatePath } from "next/cache"
+import { createClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 
-export async function addPoint(formData) {
-  const supabase = await createClient()
+type PointActionState = {
+  success?: boolean;
+  error?: string | null;
+};
 
-  // 1. Verify the user is logged in
-  const { data: { user } } = await supabase.auth.getUser()
+export async function addPoint(
+  prevState: PointActionState | null,
+  formData: FormData,
+): Promise<PointActionState> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
-    return { error: "You must be logged in to add a point." }
+    return { error: "You must be logged in to add a point." };
   }
 
-  // 2. Extract data from the form
-  const label = formData.get('label')
-  const lat = parseFloat(formData.get('lat'))
-  const lon = parseFloat(formData.get('lon'))
+  const label = formData.get("label");
+  const color = formData.get("color");
+  const lat = parseFloat(formData.get("lat")?.toString() ?? "");
+  const lon = parseFloat(formData.get("lon")?.toString() ?? "");
 
-  // Basic validation
-  if (!label || isNaN(lat) || isNaN(lon)) {
-    return { error: "Invalid form data." }
+  if (!label || Number.isNaN(lat) || Number.isNaN(lon)) {
+    return { error: "Please select a location and enter a label." };
   }
 
-  // 3. Insert into Supabase
-  const { error } = await supabase
-    .from('points')
-    .insert({
-      label: label,
-      // Supabase parses this WKT string directly into your geography column
-      location: `POINT(${lon} ${lat})` 
-    })
+  const { error } = await supabase.from("points").insert({
+    label,
+    color,
+    location: `POINT(${lon} ${lat})`,
+  });
 
   if (error) {
-    console.error(error)
-    return { error: "Failed to save point to the database." }
+    console.error(error);
+    return { error: "Failed to save point to the database." };
   }
 
-  // 4. Tell Next.js to refresh the page/map with the new data
-  revalidatePath('/') 
-  
-  return { success: true }
+  revalidatePath("/");
+
+  return { success: true, error: null };
 }

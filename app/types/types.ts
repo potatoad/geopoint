@@ -7,5 +7,6 @@ export interface Feature {
   properties: {
     id: number
     label: string
+    color: string
   }
 }

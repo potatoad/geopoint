@@ -4,7 +4,6 @@ import { ThemeSwitcher } from "@/components/theme-switcher"
 import Link from "next/link"
 import { Suspense } from "react"
 import { DataList } from '@/components/data-list'
-import AddPointForm from '@/components/app-point-form'
 
 export default function Home() {
   return (
@@ -29,7 +28,6 @@ export default function Home() {
             <Suspense>
               <DataList />
             </Suspense>
-            <AddPointForm/>
           </main>
         </div>
 

@@ -21,18 +21,18 @@ export async function addPoint(
     return { error: "You must be logged in to add a point." };
   }
 
-  const label = formData.get("label");
-  const color = formData.get("color");
+  const name = formData.get("name");
+  const period = formData.get("period");
   const lat = parseFloat(formData.get("lat")?.toString() ?? "");
   const lon = parseFloat(formData.get("lon")?.toString() ?? "");
 
-  if (!label || Number.isNaN(lat) || Number.isNaN(lon)) {
-    return { error: "Please select a location and enter a label." };
+  if (!name || Number.isNaN(lat) || Number.isNaN(lon)) {
+    return { error: "Please select a location and enter a name." };
   }
 
   const { error } = await supabase.from("points").insert({
-    label,
-    color,
+    name,
+    period,
     location: `POINT(${lon} ${lat})`,
   });
 

@@ -9,13 +9,13 @@ export async function DataList() {
   const { data, error } = await supabase
     .rpc('get_points_geojson')
   if (error) console.error(error)
-  else console.log(data)
+  // else console.log(data)
 
   return data ? (
     <div className="flex items-center gap-4">
       <ul>
         {data.features.map((feature: Feature) => (
-          <li key={feature.properties.id}>{feature.properties.label}</li>
+          <li key={feature.properties.id}>{feature.properties.name}</li>
         ))}
       </ul>
     </div>

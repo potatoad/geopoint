@@ -1,17 +1,29 @@
-import { createClient } from "@/lib/supabase/server"
-import { MapView } from "@/components/map-view"
-import type { Feature } from "@/app/types/types"
+import type { Feature } from '@/app/types/types'
+import { MapView } from '@/components/map-view'
+import { createClient } from '@/lib/supabase/server'
 
-export async function Hero() {
+export async function Hero(): Promise<React.ReactElement | null> {
   const supabase = await createClient()
-  const { data, error } = await supabase.rpc("get_points_geojson")
+  const { data: user, error: userError } = await supabase.auth.getClaims()
+  const { data: points, error: pointError } = await supabase.rpc('get_points_geojson')
+  const { data: periods, error: periodsError } = await supabase.from('periods').select()
 
-  if (error) {
-    console.error(error)
+  if (userError) {
+    console.error(userError)
     return null
   }
 
-  const features = (data?.features ?? []) as Feature[]
+  if (pointError) {
+    console.error(pointError)
+    return null
+  }
 
-  return <MapView features={features} />
+  if (periodsError) {
+    console.error(periodsError)
+    return null
+  }
+
+  const features = (points?.features ?? []) as Feature[]
+
+  return <MapView features={features} periods={periods} isAuthed={user?.claims ? true : false} />
 }

@@ -6,7 +6,16 @@ export interface Feature {
   }
   properties: {
     id: number
-    label: string
+    name: string
+    period: string
     color: string
+    description: string
   }
+}
+
+export interface Period {
+  color: string
+  created_at: string
+  id: number
+  name: string
 }

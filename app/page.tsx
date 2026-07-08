@@ -1,11 +1,10 @@
-import { AuthButton } from "@/components/auth-button"
-import { Hero } from "@/components/hero"
-import { ThemeSwitcher } from "@/components/theme-switcher"
-import Link from "next/link"
-import { Suspense } from "react"
-import { DataList } from '@/components/data-list'
+import { AuthButton } from "@/components/auth-button";
+import { Hero } from "@/components/hero";
+import { ThemeSwitcher } from "@/components/theme-switcher";
+import Link from "next/link";
+import { Suspense } from "react";
 
-export default function Home() {
+export default function Home(): React.ReactElement {
   return (
     <main className="min-h-screen flex flex-col items-center">
       <div className="flex-1 w-full flex flex-col gap-20 items-center">
@@ -14,38 +13,40 @@ export default function Home() {
             <div className="flex gap-5 items-center font-semibold">
               <Link href={"/"}>GEOpoint</Link>
             </div>
-              <Suspense>
-                <AuthButton />
-              </Suspense>
+            <Suspense>
+              <AuthButton />
+            </Suspense>
           </div>
         </nav>
         <div className="flex-1 flex flex-col gap-20 w-full p-5">
           <Suspense>
             <Hero />
           </Suspense>
-          <main className="flex-1 flex flex-col gap-6 px-4">
+          {/*  <div className="w-full p-[1px] bg-gradient-to-r from-transparent via-foreground/10 to-transparent my-8" />
+           <main className="flex-1 flex flex-col gap-6 px-4">
             <h2 className="font-medium text-xl mb-4">List of Points</h2>
             <Suspense>
               <DataList />
             </Suspense>
-          </main>
+          </main> */}
         </div>
 
         <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
           <p>
             Powered by{" "}
             <a
-              href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
+              href="https://github.com/potatoad"
               target="_blank"
               className="font-bold hover:underline"
               rel="noreferrer"
             >
-              Supabase
-            </a>
+              potatoad
+            </a>{" "}
+            🐸
           </p>
           <ThemeSwitcher />
         </footer>
       </div>
     </main>
-  )
+  );
 }

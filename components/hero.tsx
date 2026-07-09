@@ -1,5 +1,5 @@
 import type { Feature } from '@/app/types/types'
-import { MapView } from '@/components/map-view'
+import { MapViewClient } from '@/components/map-view-client'
 import { createClient } from '@/lib/supabase/server'
 
 export async function Hero(): Promise<React.ReactElement | null> {
@@ -25,5 +25,5 @@ export async function Hero(): Promise<React.ReactElement | null> {
 
   const features = (points?.features ?? []) as Feature[]
 
-  return <MapView features={features} periods={periods} isAuthed={user?.claims ? true : false} />
+  return <MapViewClient features={features} periods={periods} isAuthed={user?.claims ? true : false} />
 }

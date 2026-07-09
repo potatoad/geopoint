@@ -129,7 +129,6 @@ export function MapView({ features, periods, isAuthed }: MapViewProps): React.Re
                 name='period'
                 required
                 className='rounded py-2 px-3'
-                defaultValue='Select Period'
                 value={newPeriod}
                 onChange={(event) => {
                   setNewPeriod(event.target.value)

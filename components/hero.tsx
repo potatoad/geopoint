@@ -6,7 +6,7 @@ export async function Hero(): Promise<React.ReactElement | null> {
   const supabase = await createClient()
   const { data: user, error: userError } = await supabase.auth.getClaims()
   const { data: points, error: pointError } = await supabase.rpc('get_points_geojson')
-  const { data: periods, error: periodsError } = await supabase.from('periods').select()
+  const { data: ages, error: periodsError } = await supabase.from('ages').select()
 
   if (userError) {
     console.error(userError)
@@ -25,5 +25,5 @@ export async function Hero(): Promise<React.ReactElement | null> {
 
   const features = (points?.features ?? []) as Feature[]
 
-  return <MapViewClient features={features} periods={periods} isAuthed={user?.claims ? true : false} />
+  return <MapViewClient features={features} ages={ages} isAuthed={user?.claims ? true : false} />
 }

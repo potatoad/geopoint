@@ -1,7 +1,7 @@
 'use client'
 
 import { addPoint } from '@/app/actions'
-import type { Feature, Period } from '@/app/types/types'
+import type { Age, Feature } from '@/app/types/types'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { RLayer, RMap, RMarker, RSource, RTerrainControl } from 'maplibre-react-components'
 import { useRouter } from 'next/navigation'
@@ -12,7 +12,7 @@ const rasterDemTiles = ['https://s3.amazonaws.com/elevation-tiles-prod/terrarium
 
 interface MapViewProps {
   features: Feature[]
-  periods: Period[]
+  ages: Age[]
   isAuthed: boolean
 }
 
@@ -26,18 +26,18 @@ const initialState = {
   error: null as string | null,
 }
 
-export function MapView({ features, periods, isAuthed }: MapViewProps): React.ReactElement {
+export function MapView({ features, ages, isAuthed }: MapViewProps): React.ReactElement {
   const brighton: [number, number] = [-0.18859, 50.8373889]
   const router = useRouter()
   const [selectedLocation, setSelectedLocation] = useState<SelectedLocation | null>(null)
   const [name, setName] = useState('')
-  const [newPeriod, setNewPeriod] = useState('')
+  const [newAge, setNewAge] = useState('')
   const [state, formAction, isPending] = useActionState(addPoint, initialState)
   const [infoBox, setInfoBox] = useState({
     name: '',
-    description: '',
+    desc: '',
     color: '',
-    period: '',
+    age: '',
   })
 
   useEffect(() => {
@@ -66,21 +66,21 @@ export function MapView({ features, periods, isAuthed }: MapViewProps): React.Re
         <RTerrainControl source='terrarium' position='top-left' exaggeration={1.1} />
         {features.map((feature) => (
           <RMarker
-            key={feature.properties.id}
-            longitude={feature.geometry.coordinates[0]}
-            latitude={feature.geometry.coordinates[1]}
+            key={feature.id}
+            longitude={feature.location.coordinates[0]}
+            latitude={feature.location.coordinates[1]}
             initialAnchor='bottom'
             onClick={(event) => {
               event.stopPropagation()
               setInfoBox({
-                name: feature.properties.name,
-                description: feature.properties.description,
-                color: feature.properties.color,
-                period: feature.properties.period,
+                name: feature.name,
+                desc: feature.desc,
+                color: feature.age_color,
+                age: feature.age_name,
               })
             }}
           >
-            <CustomMarker color={feature.properties.color} />
+            <CustomMarker color={feature.age_color} />
           </RMarker>
         ))}
         {selectedLocation && <RMarker longitude={selectedLocation.lon} latitude={selectedLocation.lat}></RMarker>}
@@ -90,8 +90,9 @@ export function MapView({ features, periods, isAuthed }: MapViewProps): React.Re
         <div className='w-full max-w-xl rounded-lg border bg-background/80 p-6 shadow-sm'>
           <h3 className='text-lg font-semibold'>{infoBox.name}</h3>
           <h4 className='subtitle' style={{ color: infoBox.color }}>
-            {infoBox.period}
+            {infoBox.age}
           </h4>
+          <p>{infoBox.desc}</p>
         </div>
 
         {isAuthed && (
@@ -124,28 +125,34 @@ export function MapView({ features, periods, isAuthed }: MapViewProps): React.Re
                   <span>Click on the map to set the location.</span>
                 )}
               </div>
-              <label>Period</label>
+              <label>Age</label>
               <select
-                name='period'
+                name='age'
                 required
                 className='rounded py-2 px-3'
-                value={newPeriod}
+                value={newAge}
                 onChange={(event) => {
-                  setNewPeriod(event.target.value)
+                  setNewAge(event.target.value)
                 }}
               >
                 <option key='none' value=''>
-                  Select Period
+                  Select Age
                 </option>
-                {periods?.map((period) => (
-                  <option key={period.id} value={period.name}>
-                    {period.name}
+                {ages?.map((age) => (
+                  <option style={{ backgroundColor: age.color }} key={age.id} value={age.id}>
+                    {age.name}
                   </option>
                 ))}
               </select>
 
               <div>
-                <input className='rounded py-2 px-3 w-full' placeholder='Description' type='textarea'></input>
+                <input
+                  id='desc'
+                  name='desc'
+                  className='rounded py-2 px-3 w-full'
+                  placeholder='Description'
+                  type='textarea'
+                ></input>
               </div>
 
               {state.error ? <p className='text-sm text-red-600'>{state.error}</p> : null}

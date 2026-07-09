@@ -1,21 +1,23 @@
 export interface Feature {
   type: string
-  geometry: {
+  location: {
     type: string
-    coordinates: [number,number]
+    coordinates: [number, number]
   }
-  properties: {
-    id: number
-    name: string
-    period: string
-    color: string
-    description: string
-  }
-}
-
-export interface Period {
-  color: string
-  created_at: string
   id: number
   name: string
+  period: string
+  age_name: string
+  age_color: string
+  desc: string
+}
+
+export interface Age {
+  id: number
+  created_at: string
+  name: string
+  epoch: number
+  color: string
+  start: number
+  events: string
 }
